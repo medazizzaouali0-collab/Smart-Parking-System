@@ -6,9 +6,7 @@ import sqlite3
 import hashlib
 import base64
 
-# ============================================
-# 1. BASE DE DONNÉES (AUTHENTIFICATION)
-# ============================================
+# 1. BASE DE DONNÉES
 def init_db():
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
@@ -41,20 +39,15 @@ def add_user(username, password):
 
 init_db()
 
-# ============================================
 # 2. LOGO EN BASE64
-# ============================================
-# 2. On charge le logo (assurez-vous que le nom du fichier correspond exactement)
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
-# Mettez le chemin complet vers votre fichier
 image_path = r"C:/Users/User/Desktop/smart_parking_app/EPT_logo-removebg-preview.png"
 
 LOGO_B64 = get_base64_image(image_path)
-# ============================================
+
 # 3. FONCTIONS DE LECTURE DES DONNÉES CV
-# ============================================
 def check_parking_config():
     return os.path.exists('parking_config.json')
 
@@ -82,9 +75,7 @@ def load_parking_status():
     return None
 
 
-# ============================================
-# 4. STYLE CSS — NEON BRIGHT
-# ============================================
+# 4. STYLE CSS 
 st.set_page_config(page_title="EPT SmartPark", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
@@ -512,9 +503,8 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# ============================================
 # 5. PAGE PRINCIPALE
-# ============================================
+
 if not check_parking_config():
     st.markdown("""
     <div class="config-missing">
@@ -533,7 +523,7 @@ SPOTS_CONFIG = load_parking_config()
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
-# ── AUTH PAGE ────────────────────────────────────────────────────────────────
+#AUTH PAGE
 if not st.session_state['logged_in']:
     st.markdown(f"""
 <div class="page-hero">
@@ -572,7 +562,7 @@ if not st.session_state['logged_in']:
                 st.warning("Remplissez tous les champs.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ── DASHBOARD ────────────────────────────────────────────────────────────────
+#DASHBOARD
 else:
     initial = st.session_state['username'][0].upper()
     c_titre, c_btn = st.columns([9, 1])

@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const row1Container = document.getElementById("row-1-spots");
     const row2Container = document.getElementById("row-2-spots");
 
-    // Initialize the UI grid
     function initGrid() {
         for(let i = 1; i <= 9; i++) {
             row1Container.innerHTML += `<div class="spot" id="spot-${i}">P${i}<span>...</span></div>`;
@@ -12,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Fetch live data from Flask
     async function updateDashboard() {
         try {
             const response = await fetch('/api/status');

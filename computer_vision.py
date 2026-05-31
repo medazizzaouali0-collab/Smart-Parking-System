@@ -4,14 +4,10 @@ import time
 import json
 import os
 
-# ============================================
 # CONFIGURATION - UNE SEULE CAMÉRA
-# ============================================
 CAMERA_INDEX = 1
 
-# ============================================
 # PARAMÈTRES DE DÉTECTION
-# ============================================
 OCCUPANCY_THRESHOLD = 0.12
 MOTION_SENSITIVITY  = 20
 BLUR_SIZE           = 21
@@ -31,7 +27,7 @@ ALL_SPOTS = [
     {"id":  7, "center": (232, RANGEE_1_Y), "radius": RAYON, "rangee": 1},
     {"id":  8, "center": (264, RANGEE_1_Y), "radius": RAYON, "rangee": 1},
     {"id":  9, "center": (297, RANGEE_1_Y), "radius": RAYON, "rangee": 1},
-    # ── Rangée 2 : 6 places (haut) ──  <-- CORRIGÉ : RANGEE_2_Y appliqué ici
+    # ── Rangée 2 : 6 places (haut) ── 
     {"id": 10, "center": (432, RANGEE_2_Y), "radius": RAYON, "rangee": 2},
     {"id": 11, "center": (464, RANGEE_2_Y), "radius": RAYON, "rangee": 2},
     {"id": 12, "center": (494, RANGEE_2_Y), "radius": RAYON, "rangee": 2},
@@ -40,11 +36,8 @@ ALL_SPOTS = [
     {"id": 15, "center": (583, RANGEE_2_Y), "radius": RAYON, "rangee": 2},
 ]
 
-# ============================================
 # FONCTIONS DE SAUVEGARDE (LIAISON WEB)
-# ============================================
 def export_config():
-    """Génère automatiquement le fichier de config requis par Streamlit"""
     dossier_actuel = os.path.dirname(os.path.abspath(__file__))
     fichier_config = os.path.join(dossier_actuel, 'parking_config.json')
     config = {"spots": ALL_SPOTS}
@@ -53,7 +46,6 @@ def export_config():
     print(f"📁 Fichier de configuration créé : {fichier_config}")
 
 def export_status(status_dict):
-    """Écrit le statut en temps réel pour le site web"""
     import os
     import time
     import json
@@ -70,17 +62,12 @@ def export_status(status_dict):
     with open(fichier_temp, 'w') as f:
         json.dump(data, f)
         
-    # --- LA CORRECTION EST ICI ---
     try:
         os.replace(fichier_temp, fichier_final)
     except PermissionError:
-        # Si le site Streamlit lit le fichier à cette fraction de seconde, 
-        # Windows bloque le remplacement. On ignore l'erreur : la prochaine frame passera !
         pass
 
-# ============================================
 # OUVERTURE CAMÉRA & DÉTECTION
-# ============================================
 def open_camera(source, name, retries=3):
     for i in range(retries):
         print(f"   Tentative {i+1}/{retries} pour {name}...")
@@ -115,15 +102,12 @@ def mouse_cb(event, x, y, flags, param):
         click_log.append((x, y))
         print(f"   [CALIB] ({x}, {y})")
 
-# ============================================
 # PROGRAMME PRINCIPAL
-# ============================================
 def main():
     print("=" * 60)
     print("🚗 SMART PARKING - 15 PLACES (2 rangées)")
     print("=" * 60)
 
-    # CRÉATION AUTOMATIQUE DU FICHIER CONFIG POUR LE SITE
     export_config()
 
     cap = open_camera(CAMERA_INDEX, "Caméra parking")
@@ -169,7 +153,6 @@ def main():
                 for s in ALL_SPOTS:
                     spots_status[s["id"]] = check_spot(frame, background, s)
                 
-                #  C'EST CETTE LIGNE QUI MANQUAIT POUR ENVOYER LES DONNÉES AU SITE !
                 export_status(spots_status)
 
             free1 = sum(1 for s in ALL_SPOTS if s["rangee"] == 1 and not spots_status[s["id"]])
